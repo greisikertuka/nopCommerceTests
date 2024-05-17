@@ -1,5 +1,6 @@
 package com.example.Projekti;
 
+import com.example.Projekti.utils.Constants;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -43,12 +44,11 @@ public class MyAccount {
         PageFactory.initElements(driver, this);
     }
 
-    public void checkData(char gender,String emri,String mbiemri,String emaili,String kompania,int d,int m,int y){
-        switch (gender){
-            case 'm':   Assertions.assertEquals(true,genderMale.isSelected());
-                        break;
-            case 'f':   Assertions.assertEquals(true,genderFemale.isSelected());
-                        break;
+    public void checkData(boolean isMale,String emri,String mbiemri,String emaili,String kompania,int d,int m,int y){
+        if (isMale) {
+            Assertions.assertTrue(genderMale.isSelected());
+        } else {
+            Assertions.assertTrue(genderFemale.isSelected());
         }
         Assertions.assertEquals(firstName.getAttribute("value"),emri);
         Assertions.assertEquals(lastName.getAttribute("value"),mbiemri);
@@ -56,12 +56,12 @@ public class MyAccount {
         Assertions.assertEquals(company.getAttribute("value"),kompania);
 
         Select selectDay = new Select(date);
-        Assertions.assertEquals(selectDay.getFirstSelectedOption().getText(),"7");
+        Assertions.assertEquals(selectDay.getFirstSelectedOption().getText(), Constants.birthDay);
 
         Select selectMonth = new Select(month);
-        Assertions.assertEquals(selectMonth.getFirstSelectedOption().getText(),"June");
+        Assertions.assertEquals(selectMonth.getFirstSelectedOption().getText(),Constants.birthMonth);
 
         Select selectYear = new Select(year);
-        Assertions.assertEquals(selectYear.getFirstSelectedOption().getText(),"1980");
+        Assertions.assertEquals(selectYear.getFirstSelectedOption().getText(),Constants.birthYear);
     }
 }

@@ -8,6 +8,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.ArrayList;
 
 
@@ -24,7 +25,7 @@ public class NoteBooks {
 
     public NoteBooks(WebDriver driver) {
         this.driver=driver;
-        wait = new WebDriverWait(this.driver, 4);
+        wait = new WebDriverWait(this.driver, Duration.ofSeconds(4));
     }
 
     public void goToNoteBooks(){
@@ -65,21 +66,21 @@ public class NoteBooks {
 
     public void addToWishListById(int id)  {
         String xPath="//div[@data-productid='"+(id+3)+"']//*[@class='buttons']/button[3]";
+        getElement(xPath, wishListxPath);
+
+    }
+
+    private void getElement(String xPath, String wishListxPath) {
         WebElement element = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(xPath)));
         element.click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(wishListxPath)));
         driver.findElement(By.xpath(closexPath)).click();
         wait.until(ExpectedConditions.invisibilityOf(driver.findElement(By.xpath(wishListxPath))));
-
     }
 
     public void addToCartById(int id){
         String xPath = "//div[@data-productid='"+(id+3)+"']//*[@class='buttons']/button[1]";
-        WebElement element = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(xPath)));
-        element.click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(shoppingCartxPath)));
-        driver.findElement(By.xpath(closexPath)).click();
-        wait.until(ExpectedConditions.invisibilityOf(driver.findElement(By.xpath(shoppingCartxPath))));
+        getElement(xPath, shoppingCartxPath);
 
     }
  }

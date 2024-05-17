@@ -9,9 +9,11 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
+
 public class MainPage {
-    private WebDriverWait wait;
-    private WebDriver driver;
+    private final WebDriverWait wait;
+    private final WebDriver driver;
 
     @FindBy(css = ".ico-login")
     public WebElement loginButton;
@@ -34,7 +36,7 @@ public class MainPage {
     public MainPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
         this.driver = driver;
-        wait=new WebDriverWait(driver,4);
+        wait=new WebDriverWait(driver, Duration.ofSeconds(4));
     }
 
     public void hover(String xPath){
