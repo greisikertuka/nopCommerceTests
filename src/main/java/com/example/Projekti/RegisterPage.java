@@ -1,12 +1,14 @@
 package com.example.Projekti;
 
+import com.example.Projekti.utils.Gender;
+import com.example.Projekti.utils.User;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 
-public class Register {
+public class RegisterPage {
 
     @FindBy(className = "male")
     public WebElement genderMale;
@@ -26,7 +28,7 @@ public class Register {
     @FindBy(css = "select[name=DateOfBirthMonth]")
     public WebElement month;
 
-    @FindBy(css=  "select[name=DateOfBirthYear]")
+    @FindBy(css = "select[name=DateOfBirthYear]")
     public WebElement year;
 
     @FindBy(id = "Email")
@@ -47,26 +49,29 @@ public class Register {
     @FindBy(id = "register-button")
     public WebElement registerButton;
 
-    public Register(WebDriver driver) {
+    public RegisterPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
     }
 
-    public void fillRegisterForm(String emri,String mbiemri,String dita,String muaji,String viti
-    ,String emaili,String passwordi){
-        genderMale.click();
-        firstName.sendKeys(emri);
-        lastName.sendKeys(mbiemri);
-        Select day= new Select(date);
-        day.selectByVisibleText(dita);
-        Select muaj= new Select(month);
-        muaj.selectByVisibleText(muaji);
-        Select vit= new Select(year);
-        vit.selectByVisibleText(viti);
-        email.sendKeys(emaili);
-        company.sendKeys("Lufthansa Industry Solutions");
+    public void fillRegisterForm(User user) {
+        if (user.getGender().equals(Gender.MALE)) {
+            genderMale.click();
+        } else {
+            genderFemale.click();
+        }
+        firstName.sendKeys(user.getName());
+        lastName.sendKeys(user.getLastName());
+        Select daySelect = new Select(date);
+        daySelect.selectByVisibleText(user.getBirthDay());
+        Select monthSelect = new Select(month);
+        monthSelect.selectByVisibleText(user.getBirthMonth());
+        Select yearSelect = new Select(year);
+        yearSelect.selectByVisibleText(user.getBirthYear());
+        email.sendKeys(user.getEmail());
+        company.sendKeys(user.getCompany());
         newsLetter.click();
-        password.sendKeys(passwordi);
-        confirmPassword.sendKeys(passwordi);
+        password.sendKeys(user.getPassword());
+        confirmPassword.sendKeys(user.getPassword());
         registerButton.click();
     }
 }

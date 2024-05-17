@@ -11,7 +11,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 
 
-public class ShoppingCart {
+public class ShoppingCartPage {
     WebDriver driver;
     WebDriverWait wait;
     String currentURL = "https://demo.nopcommerce.com/cart";
@@ -23,7 +23,7 @@ public class ShoppingCart {
     String shoppingCartEmpty = ".no-data";
     ArrayList<WebElement> arr;
 
-    public ShoppingCart(WebDriver driver) {
+    public ShoppingCartPage(WebDriver driver) {
         this.driver = driver;
         wait = new WebDriverWait(this.driver, Duration.ofSeconds(4));
     }

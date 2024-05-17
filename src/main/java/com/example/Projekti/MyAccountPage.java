@@ -1,6 +1,7 @@
 package com.example.Projekti;
 
-import com.example.Projekti.utils.Constants;
+import com.example.Projekti.utils.Gender;
+import com.example.Projekti.utils.User;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -8,7 +9,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 
-public class MyAccount {
+public class MyAccountPage {
 
     @FindBy(xpath = "//input[@id='gender-male']")
     public WebElement genderMale;
@@ -40,28 +41,28 @@ public class MyAccount {
     @FindBy(css = "input#Newsletter")
     public WebElement newsLetter;
 
-    public MyAccount(WebDriver driver) {
+    public MyAccountPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
     }
 
-    public void checkData(boolean isMale,String emri,String mbiemri,String emaili,String kompania,int d,int m,int y){
-        if (isMale) {
+    public void checkData(User user){
+        if (user.getGender().equals(Gender.MALE)) {
             Assertions.assertTrue(genderMale.isSelected());
         } else {
             Assertions.assertTrue(genderFemale.isSelected());
         }
-        Assertions.assertEquals(firstName.getAttribute("value"),emri);
-        Assertions.assertEquals(lastName.getAttribute("value"),mbiemri);
-        Assertions.assertEquals(email.getAttribute("value"),emaili);
-        Assertions.assertEquals(company.getAttribute("value"),kompania);
+        Assertions.assertEquals(firstName.getAttribute("value"),user.getName());
+        Assertions.assertEquals(lastName.getAttribute("value"),user.getLastName());
+        Assertions.assertEquals(email.getAttribute("value"),user.getEmail());
+        Assertions.assertEquals(company.getAttribute("value"),user.getCompany());
 
         Select selectDay = new Select(date);
-        Assertions.assertEquals(selectDay.getFirstSelectedOption().getText(), Constants.birthDay);
+        Assertions.assertEquals(selectDay.getFirstSelectedOption().getText(), user.getBirthDay());
 
         Select selectMonth = new Select(month);
-        Assertions.assertEquals(selectMonth.getFirstSelectedOption().getText(),Constants.birthMonth);
+        Assertions.assertEquals(selectMonth.getFirstSelectedOption().getText(),user.getBirthMonth());
 
         Select selectYear = new Select(year);
-        Assertions.assertEquals(selectYear.getFirstSelectedOption().getText(),Constants.birthYear);
+        Assertions.assertEquals(selectYear.getFirstSelectedOption().getText(),user.getBirthYear());
     }
 }

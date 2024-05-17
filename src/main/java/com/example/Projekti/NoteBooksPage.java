@@ -12,7 +12,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 
 
-public class NoteBooks {
+public class NoteBooksPage {
         WebDriver driver;
         WebDriverWait wait;
         String currentURL = "https://demo.nopcommerce.com/notebooks";
@@ -23,7 +23,7 @@ public class NoteBooks {
         String DisplayedElements = "//div[@class='item-grid']/div";
         ArrayList<WebElement> arr;
 
-    public NoteBooks(WebDriver driver) {
+    public NoteBooksPage(WebDriver driver) {
         this.driver=driver;
         wait = new WebDriverWait(this.driver, Duration.ofSeconds(4));
     }

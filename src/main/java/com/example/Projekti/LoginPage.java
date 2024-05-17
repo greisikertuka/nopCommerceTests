@@ -5,7 +5,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-public class Login {
+public class LoginPage {
 
     @FindBy(id = "Email")
     public WebElement email;
@@ -29,7 +29,7 @@ public class Login {
         this.loginButton.click();
     }
 
-    public Login(WebDriver driver) {
+    public LoginPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
     }
 }
