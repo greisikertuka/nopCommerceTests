@@ -1,4 +1,4 @@
-package com.example.Projekti;
+package com.example.Projekti.page;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -36,18 +36,18 @@ public class MainPage {
     public MainPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
         this.driver = driver;
-        wait=new WebDriverWait(driver, Duration.ofSeconds(4));
+        wait = new WebDriverWait(driver, Duration.ofSeconds(4));
     }
 
-    public void hover(String xPath){
-        WebElement webElement=wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xPath)));
-        Actions actions=new Actions(driver);
+    public void hover(String xPath) {
+        WebElement webElement = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xPath)));
+        Actions actions = new Actions(driver);
         actions.moveToElement(webElement).perform();
     }
 
-    public void hover(WebElement webElement){
+    public void hover(WebElement webElement) {
         wait.until(ExpectedConditions.visibilityOf(webElement));
-        Actions actions=new Actions(driver);
+        Actions actions = new Actions(driver);
         actions.moveToElement(webElement).perform();
     }
 }

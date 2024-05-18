@@ -1,4 +1,4 @@
-package com.example.Projekti;
+package com.example.Projekti.page;
 
 import com.example.Projekti.utils.Gender;
 import com.example.Projekti.utils.User;

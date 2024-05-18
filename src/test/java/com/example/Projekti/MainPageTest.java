@@ -1,5 +1,6 @@
 package com.example.Projekti;
 
+import com.example.Projekti.page.*;
 import com.example.Projekti.utils.Constants;
 import com.example.Projekti.utils.User;
 import com.example.Projekti.utils.Utils;
@@ -9,7 +10,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,6 @@ public class MainPageTest {
     private User user;
     private WebDriver driver;
     private Actions actions;
-    private WebDriverWait wait;
     private MainPage mainPage;
     private RegisterPage registerPage;
     private LoginPage loginPage;
@@ -38,25 +37,9 @@ public class MainPageTest {
         _setUpDriver();
         _initializePages();
         user = Constants.user;
-        wait = new WebDriverWait(driver, Duration.ofSeconds(4));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(4));
         actions = new Actions(driver);
-        utils = new Utils(driver, actions, wait);
-    }
-
-    void _setUpDriver() {
-        System.setProperty(Constants.edgeDriverKey, Constants.edgeDriverValue);
-        driver = new EdgeDriver();
-        driver.manage().window().maximize();
-        driver.get(Constants.pageURL);
-    }
-
-    void _initializePages() {
-        mainPage = new MainPage(driver);
-        registerPage = new RegisterPage(driver);
-        loginPage = new LoginPage(driver);
-        myAccountPage = new MyAccountPage(driver);
-        notebooksPage = new NoteBooksPage(driver);
-        shoppingCartPage = new ShoppingCartPage(driver);
+        utils = new Utils(driver, actions, wait, logger);
     }
 
     @AfterAll
@@ -66,24 +49,18 @@ public class MainPageTest {
 
     @Order(1)
     @Test
-    public void register() {
+    public void registerTest() {
         mainPage.loginButton.click();
         utils.findAndClick(By.xpath(Constants.registerButtonXpath));
-        WebElement registerButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(Constants.registerButtonXpath)));
-        registerButton.click();
-        wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(Constants.titleXpath))));
-        logger.info("Web page title is: " + driver.getTitle());
+        utils.findAndWaitUntilVisible(By.xpath(Constants.titleXpath), "Web page title is: " + driver.getTitle());
         registerPage.fillRegisterForm(user);
 
         try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated((By.xpath(Constants.successfulRegistrationXpath))));
-            logger.info("Registration was successful!");
-            WebElement logoutButton = wait.until(ExpectedConditions.visibilityOf(mainPage.logoutButton));
-            logoutButton.click();
+            utils.findAndWaitUntilVisible(By.xpath(Constants.successfulRegistrationXpath), "Registration was successful!");
+            utils.clickWhenVisible(mainPage.logoutButton);
         } catch (Exception e) {
             try {
-                wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(Constants.existingUserXpath))));
-                logger.warn("There is an existing account with this email!");
+                utils.findAndWaitUntilVisible(By.xpath(Constants.existingUserXpath), "There is an existing account with this email!");
             } catch (Exception ex) {
                 logger.error("There was an error while registering!");
             }
@@ -92,13 +69,11 @@ public class MainPageTest {
 
     @Order(2)
     @Test
-    public void login() {
-        mainPage.loginButton.click();
-        loginPage.fillLoginForm(user.getEmail(), user.getPassword());
+    public void loginTest() {
+        _login();
         try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated((By.xpath(Constants.welcomeMessageXpath))));
-            wait.until(ExpectedConditions.visibilityOf(mainPage.logoutButton));
-            logger.info("Login was successful!");
+            utils.findAndWaitUntilVisible(By.xpath(Constants.welcomeMessageXpath), "");
+            utils.waitUntilVisible(mainPage.logoutButton, "Login was successful!");
             mainPage.logoutButton.click();
         } catch (Exception exception) {
             logger.info(exception.getMessage(), exception);
@@ -108,69 +83,86 @@ public class MainPageTest {
     @Order(3)
     @Test
     public void myAccountTest() {
-        mainPage.loginButton.click();
-        loginPage.fillLoginForm(user.getEmail(), user.getPassword());
+        _login();
         mainPage.myAccount.click();
-
         myAccountPage.checkData(user);
         mainPage.logoutButton.click();
     }
 
     @Order(4)
     @Test
-    public void dashboard() throws InterruptedException {
-        driver.get(Constants.pageURL);
-        mainPage.hover(Constants.computersXpath);
-        WebElement notebooksClick = wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(Constants.notebooksXpath))));
-        actions.click(notebooksClick).perform();
+    public void dashboardTest() {
 
-        notebooksPage.checkURL(driver.getCurrentUrl());
-
-        notebooksPage.selectNumberOfProductsDisplayed(9);
-        Assertions.assertEquals(6, notebooksPage.numberOfElementsDisplayed());
-
-        notebooksPage.check16GB();
-        Assertions.assertEquals(1, notebooksPage.numberOfElementsDisplayed());
-
-        notebooksPage.check16GB();
-        Assertions.assertEquals(6, notebooksPage.numberOfElementsDisplayed());
-
-
-        notebooksPage.addToWishListById(2);
-        notebooksPage.addToWishListById(3);
-
-        notebooksPage.addToCartById(4);
-        notebooksPage.addToCartById(5);
-        notebooksPage.addToCartById(6);
-
+        _testNoteBooksPage();
+        int[] wishlistItems = {2, 3};
+        notebooksPage.addItemsToWishlistById(wishlistItems);
         notebooksPage.checkWishList(2);
-
         notebooksPage.checkShoppingCart(3);
 
     }
 
     @Order(5)
     @Test
-    public void shoppingCart() {
-        driver.get(Constants.pageURL);
+    public void shoppingCartTest() {
+        _testNoteBooksPage();
         mainPage.hover(mainPage.shoppingCart);
-        wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.cssSelector("div #flyout-cart"))));
-        WebElement goToCartButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[text()='Go to cart']")));
-        goToCartButton.click();
+        utils.findAndWaitUntilVisible(By.cssSelector(Constants.emptyShoppingCartCSS), "");
+        utils.findAndClickWhenVisible(By.xpath(Constants.openShoppingCartButtonXpath));
 
         shoppingCartPage.checkURL(driver.getCurrentUrl());
-
-        shoppingCartPage.checkButtons("//*[text()='Update shopping cart' or text()='Continue shopping' or text()=' Estimate shipping '] ");
-
+        shoppingCartPage.checkButtons(Constants.shoppingCartButtonsXpath);
         shoppingCartPage.checkPrice();
     }
 
     @Order(6)
     @Test
-    public void emptyShoppingCart() throws InterruptedException {
+    public void emptyShoppingCartTest() throws InterruptedException {
         shoppingCartPage.goToShoppingCart();
         while (shoppingCartPage.elementsDisplayed() != 0)
             shoppingCartPage.deleteFirstElement();
         shoppingCartPage.shoppingCartEmptyCheck();
+    }
+
+
+    private void _setUpDriver() {
+        System.setProperty(Constants.edgeDriverKey, Constants.edgeDriverValue);
+        driver = new EdgeDriver();
+        driver.manage().window().maximize();
+        driver.get(Constants.homePageUrl);
+    }
+
+    private void _initializePages() {
+        mainPage = new MainPage(driver);
+        registerPage = new RegisterPage(driver);
+        loginPage = new LoginPage(driver);
+        myAccountPage = new MyAccountPage(driver);
+        notebooksPage = new NoteBooksPage(driver);
+        shoppingCartPage = new ShoppingCartPage(driver);
+    }
+
+    private void _login() {
+        mainPage.loginButton.click();
+        loginPage.fillLoginForm(user.getEmail(), user.getPassword());
+    }
+
+    private void _testNoteBooksPage() {
+        driver.get(Constants.homePageUrl);
+        utils.hover(By.xpath(Constants.computersXpath));
+
+        WebElement notebooksClick = utils.findWhenVisible(By.xpath(Constants.notebooksXpath));
+        actions.click(notebooksClick).perform();
+        notebooksPage.checkURL(driver.getCurrentUrl());
+
+        try {
+            notebooksPage.selectNumberOfProductsDisplayed(9);
+            notebooksPage.checkItemsCountAndClickCheckbox(6);
+            notebooksPage.checkItemsCountAndClickCheckbox(1);
+        } catch (InterruptedException exception) {
+            logger.error("There was an error while displaying notebooks!");
+        }
+
+        Assertions.assertEquals(6, notebooksPage.numberOfElementsDisplayed());
+        int[] shopcartItems = {4, 5, 6};
+        notebooksPage.addItemsToCartbyId(shopcartItems);
     }
 }

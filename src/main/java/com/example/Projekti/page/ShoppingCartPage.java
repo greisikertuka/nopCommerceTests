@@ -1,4 +1,4 @@
-package com.example.Projekti;
+package com.example.Projekti.page;
 
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
@@ -67,7 +67,7 @@ public class ShoppingCartPage {
     }
 
     public void shoppingCartEmptyCheck() {
-        WebElement empty = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(shoppingCartEmpty)));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(shoppingCartEmpty)));
     }
 
     public void deleteFirstElement() throws InterruptedException {
