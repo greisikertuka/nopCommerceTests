@@ -16,13 +16,10 @@ public class LoginPage {
     @FindBy(id = "RememberMe")
     public WebElement rememberMe;
 
-    @FindBy(xpath = "//a[text()='Forgot password?']")
-    public WebElement forgotPassword;
-
     @FindBy(xpath = "//button[text()='Log in']")
     public WebElement loginButton;
 
-    public void fillLoginForm(String email,String password){
+    public void fillLoginForm(String email, String password) {
         this.email.sendKeys(email);
         this.password.sendKeys(password);
         this.rememberMe.click();

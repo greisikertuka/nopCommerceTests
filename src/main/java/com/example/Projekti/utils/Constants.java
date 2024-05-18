@@ -16,6 +16,6 @@ public class Constants {
     public final static String openShoppingCartButtonXpath = "//button[text()='Go to cart']";
     public final static String edgeDriverValue = "driver\\edge-driver.exe";
     public final static String homePageUrl = "https://demo.nopcommerce.com/";
-    public final static User user = new User("Adam", "Smith", Gender.MALE, "gdsadsatuka@gmail.com", "TestNopCommerce123", "Lufthansa Industry Solutions", "7", "June", "1996", 7, 6, 1999);
+    public final static User user = new User("Adam", "Smith", Gender.MALE, "gdsagffda@gmail.com", "TestNopCommerce123", "Lufthansa Industry Solutions", "7", "June", "1996", 7, 6, 1999);
 
 }

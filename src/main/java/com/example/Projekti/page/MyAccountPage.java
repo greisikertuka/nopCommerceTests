@@ -29,7 +29,7 @@ public class MyAccountPage {
     @FindBy(css = "select[name=DateOfBirthMonth]")
     public WebElement month;
 
-    @FindBy(css=  "select[name=DateOfBirthYear]")
+    @FindBy(css = "select[name=DateOfBirthYear]")
     public WebElement year;
 
     @FindBy(id = "Email")
@@ -38,31 +38,28 @@ public class MyAccountPage {
     @FindBy(id = "Company")
     public WebElement company;
 
-    @FindBy(css = "input#Newsletter")
-    public WebElement newsLetter;
-
     public MyAccountPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
     }
 
-    public void checkData(User user){
+    public void checkData(User user) {
         if (user.getGender().equals(Gender.MALE)) {
             Assertions.assertTrue(genderMale.isSelected());
         } else {
             Assertions.assertTrue(genderFemale.isSelected());
         }
-        Assertions.assertEquals(firstName.getAttribute("value"),user.getName());
-        Assertions.assertEquals(lastName.getAttribute("value"),user.getLastName());
-        Assertions.assertEquals(email.getAttribute("value"),user.getEmail());
-        Assertions.assertEquals(company.getAttribute("value"),user.getCompany());
+        Assertions.assertEquals(firstName.getAttribute("value"), user.getName());
+        Assertions.assertEquals(lastName.getAttribute("value"), user.getLastName());
+        Assertions.assertEquals(email.getAttribute("value"), user.getEmail());
+        Assertions.assertEquals(company.getAttribute("value"), user.getCompany());
 
         Select selectDay = new Select(date);
         Assertions.assertEquals(selectDay.getFirstSelectedOption().getText(), user.getBirthDay());
 
         Select selectMonth = new Select(month);
-        Assertions.assertEquals(selectMonth.getFirstSelectedOption().getText(),user.getBirthMonth());
+        Assertions.assertEquals(selectMonth.getFirstSelectedOption().getText(), user.getBirthMonth());
 
         Select selectYear = new Select(year);
-        Assertions.assertEquals(selectYear.getFirstSelectedOption().getText(),user.getBirthYear());
+        Assertions.assertEquals(selectYear.getFirstSelectedOption().getText(), user.getBirthYear());
     }
 }

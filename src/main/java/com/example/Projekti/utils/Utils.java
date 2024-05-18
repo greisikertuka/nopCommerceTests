@@ -18,9 +18,9 @@ public class Utils {
     }
 
     private final WebDriver driver;
-    private Actions actions;
-    private WebDriverWait wait;
-    private Logger logger;
+    private final Actions actions;
+    private final WebDriverWait wait;
+    private final Logger logger;
 
     public void findAndClick(By by) {
         WebElement element = wait.until(ExpectedConditions.elementToBeClickable(by));
@@ -56,9 +56,8 @@ public class Utils {
         actions.moveToElement(webElement).perform();
     }
 
-    public static WebElement findAndSendKeys(WebDriver driver, By by, String text) {
-        WebElement element = driver.findElement(by);
-        element.sendKeys(text);
-        return element;
+    public void hoverElement(WebElement element) {
+        wait.until(ExpectedConditions.visibilityOf(element));
+        actions.moveToElement(element).perform();
     }
 }

@@ -92,7 +92,6 @@ public class MainPageTest {
     @Order(4)
     @Test
     public void dashboardTest() {
-
         _testNoteBooksPage();
         int[] wishlistItems = {2, 3};
         notebooksPage.addItemsToWishlistById(wishlistItems);
@@ -105,7 +104,8 @@ public class MainPageTest {
     @Test
     public void shoppingCartTest() {
         _testNoteBooksPage();
-        mainPage.hover(mainPage.shoppingCart);
+        utils.hoverElement(mainPage.shoppingCart);
+        //mainPage.hover(mainPage.shoppingCart);
         utils.findAndWaitUntilVisible(By.cssSelector(Constants.emptyShoppingCartCSS), "");
         utils.findAndClickWhenVisible(By.xpath(Constants.openShoppingCartButtonXpath));
 
@@ -118,8 +118,7 @@ public class MainPageTest {
     @Test
     public void emptyShoppingCartTest() throws InterruptedException {
         shoppingCartPage.goToShoppingCart();
-        while (shoppingCartPage.elementsDisplayed() != 0)
-            shoppingCartPage.deleteFirstElement();
+        while (shoppingCartPage.elementsDisplayed() != 0) shoppingCartPage.deleteFirstElement();
         shoppingCartPage.shoppingCartEmptyCheck();
     }
 
@@ -132,7 +131,7 @@ public class MainPageTest {
     }
 
     private void _initializePages() {
-        mainPage = new MainPage(driver);
+        mainPage = new MainPage();
         registerPage = new RegisterPage(driver);
         loginPage = new LoginPage(driver);
         myAccountPage = new MyAccountPage(driver);

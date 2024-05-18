@@ -28,10 +28,6 @@ public class NoteBooksPage {
         wait = new WebDriverWait(this.driver, Duration.ofSeconds(4));
     }
 
-    public void goToNoteBooks() {
-        driver.get(currentURL);
-    }
-
     public void checkURL(String url) {
         Assertions.assertEquals(currentURL, url);
     }
