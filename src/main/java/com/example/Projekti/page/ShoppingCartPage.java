@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -16,16 +17,18 @@ public class ShoppingCartPage {
     WebDriverWait wait;
     String currentURL = "https://demo.nopcommerce.com/cart";
     String displayedElements = "//table[@class='cart']/tbody/tr";
-    String itemPriceXPath = "//table[@class='cart']//tbody/tr/td[@class='unit-price']//span";
+    String itemPriceXPath = "//table[@class='cart']//tbody/tr/td[@class='subtotal']//span";
     String totalPrice = "//tr[@class='order-total']/td[@class=\"cart-total-right\"]//strong";
     String firstElement = "(//table[@class='cart']//tbody/tr/td[1])[1]/span";
     String deleteFirstButton = "(//button[@class='remove-btn'])[1]";
     String shoppingCartEmpty = ".no-data";
-    ArrayList<WebElement> arr;
+    ArrayList<WebElement> elementsList;
 
     public ShoppingCartPage(WebDriver driver) {
         this.driver = driver;
         wait = new WebDriverWait(this.driver, Duration.ofSeconds(4));
+        PageFactory.initElements(driver, this);
+
     }
 
     public void goToShoppingCart() {
@@ -37,27 +40,27 @@ public class ShoppingCartPage {
     }
 
     public void checkButtons(String xPath) {
-        arr = new ArrayList<>(driver.findElements(By.xpath(xPath)));
-        for (WebElement button : arr) {
+        elementsList = new ArrayList<>(driver.findElements(By.xpath(xPath)));
+        for (WebElement button : elementsList) {
             Assertions.assertTrue(button.isDisplayed());
         }
     }
 
     public int elementsDisplayed() {
-        arr = new ArrayList<>(driver.findElements(By.xpath(displayedElements)));
-        return arr.size();
+        elementsList = new ArrayList<>(driver.findElements(By.xpath(displayedElements)));
+        return elementsList.size();
     }
 
 
     public void checkPrice() {
-        arr = new ArrayList<>(driver.findElements(By.xpath(itemPriceXPath)));
-        String s;
+        elementsList = new ArrayList<>(driver.findElements(By.xpath(itemPriceXPath)));
+        String itemSumString;
         double sum = 0.0;
-        for (WebElement webElement : arr) {
-            s = webElement.getText();
-            s = s.substring(1);
-            s = s.replace(",", "");
-            sum += Double.parseDouble(s);
+        for (WebElement webElement : elementsList) {
+            itemSumString = webElement.getText();
+            itemSumString = itemSumString.substring(1);
+            itemSumString = itemSumString.replace(",", "");
+            sum += Double.parseDouble(itemSumString);
         }
         String totalExpectedPrice = driver.findElement(By.xpath(totalPrice)).getText();
         totalExpectedPrice = totalExpectedPrice.substring(1);
@@ -72,10 +75,10 @@ public class ShoppingCartPage {
 
     public void deleteFirstElement() throws InterruptedException {
         int previousNumber = elementsDisplayed();
-        String s = driver.findElement(By.xpath(firstElement)).getText();
+        String firstElementText = driver.findElement(By.xpath(firstElement)).getText();
         driver.findElement(By.xpath(deleteFirstButton)).click();
         Thread.sleep(1000);
-        Assertions.assertFalse(inHTML(s));
+        Assertions.assertFalse(inHTML(firstElementText));
         int followingNumber = elementsDisplayed();
         Assertions.assertEquals(followingNumber, previousNumber - 1);
     }

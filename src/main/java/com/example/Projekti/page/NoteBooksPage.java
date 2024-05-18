@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -21,11 +22,12 @@ public class NoteBooksPage {
     String shoppingCartxPath = "//p[text()='The product has been added to your ']/a[text()='shopping cart']";
     String closexPath = "//p[text()='The product has been added to your ']/following-sibling::span";
     String DisplayedElements = "//div[@class='item-grid']/div";
-    ArrayList<WebElement> arr;
+    ArrayList<WebElement> elementsList;
 
     public NoteBooksPage(WebDriver driver) {
         this.driver = driver;
         wait = new WebDriverWait(this.driver, Duration.ofSeconds(4));
+        PageFactory.initElements(driver, this);
     }
 
     public void checkURL(String url) {
@@ -61,8 +63,8 @@ public class NoteBooksPage {
     }
 
     public int displayedElementsCount() {
-        arr = new ArrayList<>(driver.findElements(By.xpath(DisplayedElements)));
-        return arr.size();
+        elementsList = new ArrayList<>(driver.findElements(By.xpath(DisplayedElements)));
+        return elementsList.size();
     }
 
     public void addItemsToWishlistById(int[] idList) {

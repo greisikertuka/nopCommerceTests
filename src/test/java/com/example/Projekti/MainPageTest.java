@@ -31,7 +31,6 @@ public class MainPageTest {
     private Utils utils;
     private static final Logger logger = LoggerFactory.getLogger(MainPageTest.class);
 
-
     @BeforeAll
     public void setUp() {
         _setUpDriver();
@@ -40,6 +39,7 @@ public class MainPageTest {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(4));
         actions = new Actions(driver);
         utils = new Utils(driver, actions, wait, logger);
+        mainPage = new MainPage(driver);
     }
 
     @AfterAll
@@ -86,32 +86,33 @@ public class MainPageTest {
         _login();
         mainPage.myAccount.click();
         myAccountPage.checkProfileData(user);
+        logger.info("User account data was correct!");
         mainPage.logoutButton.click();
     }
 
     @Order(4)
     @Test
-    public void dashboardTest() {
-        _testNoteBooksPage();
+    public void addToCartAndWishlistTest() {
+        _testNoteBooksPage(false);
         int[] wishlistItems = {2, 3};
         notebooksPage.addItemsToWishlistById(wishlistItems);
         notebooksPage.checkWishList(2);
         notebooksPage.checkShoppingCart(3);
-
+        logger.info("Items can be added into the shop cart and wishlist successfully!");
     }
 
     @Order(5)
     @Test
-    public void shoppingCartTest() {
-        _testNoteBooksPage();
-        utils.hoverElement(mainPage.shoppingCart);
-        //mainPage.hover(mainPage.shoppingCart);
+    public void shoppingCartTotalPriceTest() {
+        _testNoteBooksPage(true);
+        mainPage.hover(mainPage.shoppingCart);
         utils.findAndWaitUntilVisible(By.cssSelector(Constants.emptyShoppingCartCSS), "");
         utils.findAndClickWhenVisible(By.xpath(Constants.openShoppingCartButtonXpath));
 
         shoppingCartPage.checkURL(driver.getCurrentUrl());
         shoppingCartPage.checkButtons(Constants.shoppingCartButtonsXpath);
         shoppingCartPage.checkPrice();
+        logger.info("Total price of items in the shopcart is a sum of all items!");
     }
 
     @Order(6)
@@ -131,7 +132,7 @@ public class MainPageTest {
     }
 
     private void _initializePages() {
-        mainPage = new MainPage();
+        mainPage = new MainPage(driver);
         registerPage = new RegisterPage(driver);
         loginPage = new LoginPage(driver);
         myAccountPage = new MyAccountPage(driver);
@@ -144,18 +145,21 @@ public class MainPageTest {
         loginPage.fillLoginForm(user.getEmail(), user.getPassword());
     }
 
-    private void _testNoteBooksPage() {
+    private void _testNoteBooksPage(boolean totalAmountTest) {
         driver.get(Constants.homePageUrl);
         utils.hover(By.xpath(Constants.computersXpath));
 
         WebElement notebooksClick = utils.findWhenVisible(By.xpath(Constants.notebooksXpath));
         actions.click(notebooksClick).perform();
-        notebooksPage.checkURL(driver.getCurrentUrl());
-
+        if (!totalAmountTest) {
+            notebooksPage.checkURL(driver.getCurrentUrl());
+        }
         try {
             notebooksPage.selectNumberOfProductsDisplayed(9);
-            notebooksPage.checkItemsCountAndClickCheckbox(6);
-            notebooksPage.checkItemsCountAndClickCheckbox(1);
+            if (!totalAmountTest) {
+                notebooksPage.checkItemsCountAndClickCheckbox(6);
+                notebooksPage.checkItemsCountAndClickCheckbox(1);
+            }
         } catch (InterruptedException exception) {
             logger.error("There was an error while displaying notebooks!");
         }
