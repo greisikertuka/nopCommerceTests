@@ -42,7 +42,7 @@ public class MyAccountPage {
         PageFactory.initElements(driver, this);
     }
 
-    public void checkData(User user) {
+    public void checkProfileData(User user) {
         if (user.getGender().equals(Gender.MALE)) {
             Assertions.assertTrue(genderMale.isSelected());
         } else {

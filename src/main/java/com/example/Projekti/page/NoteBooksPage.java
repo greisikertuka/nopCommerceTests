@@ -39,7 +39,7 @@ public class NoteBooksPage {
     }
 
     public void checkItemsCountAndClickCheckbox(int expectedItemsCount) throws InterruptedException {
-        Assertions.assertEquals(expectedItemsCount, numberOfElementsDisplayed());
+        Assertions.assertEquals(expectedItemsCount, displayedElementsCount());
         click16GBCheckbox();
     }
 
@@ -60,7 +60,7 @@ public class NoteBooksPage {
         Assertions.assertEquals(wishList, s);
     }
 
-    public int numberOfElementsDisplayed() {
+    public int displayedElementsCount() {
         arr = new ArrayList<>(driver.findElements(By.xpath(DisplayedElements)));
         return arr.size();
     }
@@ -68,11 +68,11 @@ public class NoteBooksPage {
     public void addItemsToWishlistById(int[] idList) {
         for (int id : idList) {
             String xPath = "//div[@data-productid='" + (id + 3) + "']//*[@class='buttons']/button[3]";
-            getElement(xPath, wishListxPath);
+            addToWishList(xPath, wishListxPath);
         }
     }
 
-    private void getElement(String xPath, String wishListxPath) {
+    private void addToWishList(String xPath, String wishListxPath) {
         WebElement element = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(xPath)));
         element.click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(wishListxPath)));
@@ -83,7 +83,7 @@ public class NoteBooksPage {
     public void addItemsToCartbyId(int[] idList) {
         for (int id : idList) {
             String xPath = "//div[@data-productid='" + (id + 3) + "']//*[@class='buttons']/button[1]";
-            getElement(xPath, shoppingCartxPath);
+            addToWishList(xPath, shoppingCartxPath);
         }
     }
 }

@@ -85,7 +85,7 @@ public class MainPageTest {
     public void myAccountTest() {
         _login();
         mainPage.myAccount.click();
-        myAccountPage.checkData(user);
+        myAccountPage.checkProfileData(user);
         mainPage.logoutButton.click();
     }
 
@@ -160,7 +160,7 @@ public class MainPageTest {
             logger.error("There was an error while displaying notebooks!");
         }
 
-        Assertions.assertEquals(6, notebooksPage.numberOfElementsDisplayed());
+        Assertions.assertEquals(6, notebooksPage.displayedElementsCount());
         int[] shopcartItems = {4, 5, 6};
         notebooksPage.addItemsToCartbyId(shopcartItems);
     }
